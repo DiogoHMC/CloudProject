@@ -2,7 +2,7 @@ name: Promote staging -> main
 
 on:
   workflow_run:
-    workflows: ["CI - Staging"]
+    workflows: ["CI - Staging (env & sanity tests)"]
     types: [completed]
 
 jobs:
