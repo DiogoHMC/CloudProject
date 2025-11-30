@@ -16,13 +16,12 @@ class IsCoolService:
             detail = "low"
             
         if detail == "high":
-            detail = "with in-depth explanations and examples"
+            detail = "alto, com muitos detalhes e exemplos"
         elif detail == "low":
-            detail = "with concise explanations"
+            detail = "baixo, com os minimos detalhes necessários, direto ao ponto e sem exemplos"
 
         prompt = (
             f"Você é um professor experiente. Ensine o tópico '{topic}' para um aluno de nível {level}. com um nível de detalhe {detail}. "
-            "Seja claro, use exemplos práticos, explique os conceitos passo a passo"
             "Responda de forma didática e amigável. Porem sem muitos emotes ou muitas figuras"
         )
 

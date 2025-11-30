@@ -10,6 +10,6 @@ def test_root_staging():
 
 def test_api_key_present():
     # Garante que a key está configurada no ambiente do Render Staging
-    key = os.getenv("API_KEY")
+    key = os.getenv("GEMINI_API_KEY")
     assert key is not None
     assert len(key) > 5

@@ -12,9 +12,9 @@ client = TestClient(app)
 def test_ask_minimal_prod():
     payload = {
         "user_id": "u1",
-        "topic": "Hi",
+        "topic": "Cloud Management",
         "explanation_level": "beginner",
-        "detail_level": "short"
+        "detail_level": "low"
     }
     r = client.post("/v1/ask", json=payload)
     assert r.status_code == 200
