@@ -1,4 +1,4 @@
-import pytest
+# test/test_api.py
 from fastapi.testclient import TestClient
 from app.main import app
 
@@ -9,8 +9,13 @@ def test_root():
     assert r.status_code == 200
     assert r.json()["service"] == "IsCoolGPT"
 
-def test_ask():
-    payload = {"user_id": "u1", "prompt": "Explique POO em 2 frases"}
+def test_ask_minimal():
+    payload = {
+        "user_id": "u1",
+        "topic": "Cloud infrestructure",
+        "explanation_level": "beginner",
+        "detail_level": "short"
+    }
     r = client.post("/v1/ask", json=payload)
     assert r.status_code == 200
     data = r.json()

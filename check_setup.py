@@ -148,34 +148,12 @@ def main():
     ))
     
     print("\n" + "="*60)
-    
-    # Summary
-    total = len(results)
-    passed = sum(results)
-    failed = total - passed
-    percentage = (passed / total * 100) if total > 0 else 0
-    
-    print(f"\n📊 RESULTADO FINAL")
-    print(f"   ✅ Passou: {passed}/{total}")
-    print(f"   ❌ Falhou: {failed}/{total}")
-    print(f"   📈 Taxa: {percentage:.1f}%")
-    
-    print("\n" + "="*60)
-    
-    if failed == 0:
-        print("\n🎉 TUDO CONFIGURADO! Você está pronto para usar!")
-        print("\n⚠️  PRÓXIMOS PASSOS:")
-        print("  1. Adicione sua chave Gemini no arquivo .env")
-        print("  2. Execute: python -m venv venv")
-        print("  3. Execute: venv\\Scripts\\activate")
-        print("  4. Execute: pip install -r requirements.txt")
-        print("  5. Execute: python -m uvicorn app.main:app --reload")
-        print("\n📍 Acesse: http://localhost:8000/docs\n")
+    if all(results):
+        print("🎉 Tudo parece estar configurado corretamente para a integração com Gemini!")
         return 0
     else:
-        print("\n⚠️  Alguns itens não estão configurados!")
-        print("    Verifique os itens marcados com ❌\n")
+        print("⚠️  Alguns itens não passaram na verificação. Por favor, revise os passos acima.")
         return 1
-
+    
 if __name__ == "__main__":
     sys.exit(main())

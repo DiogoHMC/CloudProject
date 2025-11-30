@@ -5,7 +5,6 @@ Testa se a API está funcionando com Gemini
 
 import asyncio
 import httpx
-import json
 
 async def test_api():
     """Testa o endpoint /v1/ask"""

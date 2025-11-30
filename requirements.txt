@@ -7,3 +7,6 @@ pytest
 python-dotenv
 boto3
 google-generativeai
+pytest-cov
+ruff
+
