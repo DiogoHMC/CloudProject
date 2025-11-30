@@ -1,8 +1,8 @@
-name: Promote staging -> main
+name: Promote dev -> staging
 
 on:
   workflow_run:
-    workflows: ["CI - Staging"]
+    workflows: ["CI - Development"]
     types: [completed]
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -23,8 +23,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Merge staging -> main
+      - name: Merge dev -> staging
         run: |
-          git checkout main
-          git merge origin/staging --no-ff --no-edit || true
-          git push origin main
+          git checkout staging
+          git merge origin/development --no-ff --no-edit || true
+          git push origin staging

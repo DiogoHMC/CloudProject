@@ -1,0 +1,15 @@
+name: Deploy Production (Render)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Render (prod)
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_PROD_SERVICE_ID }}
