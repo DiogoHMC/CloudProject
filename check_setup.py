@@ -155,11 +155,6 @@ def main():
     failed = total - passed
     percentage = (passed / total * 100) if total > 0 else 0
     
-    print(f"\n📊 RESULTADO FINAL")
-    print(f"   ✅ Passou: {passed}/{total}")
-    print(f"   ❌ Falhou: {failed}/{total}")
-    print(f"   📈 Taxa: {percentage:.1f}%")
-    
     print("\n" + "="*60)
     
     if failed == 0:
