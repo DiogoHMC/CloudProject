@@ -2,7 +2,7 @@ name: Promote staging -> main
 
 on:
   workflow_run:
-    workflows: ["CI - Staging (env & sanity tests)"]
+    workflows: ["CI - Staging (tests & validation)"]
     types: [completed]
 
 jobs:
@@ -13,8 +13,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
