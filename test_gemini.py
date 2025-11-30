@@ -16,6 +16,8 @@ async def test_api():
         "prompt": "Qual é o capital da França?"
     }
     
+    print("TESTEEEE")
+    
     print("🧪 Testando API IsCoolGPT com Gemini...")
     print(f"📝 Prompt: {payload['prompt']}")
     print("-" * 50)
