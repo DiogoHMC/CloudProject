@@ -1,0 +1,23 @@
+name: Staging CI
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  staging_tests:
+    runs-on: ubuntu-latest
+    env:
+      API_KEY: ${{ secrets.STAGING_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Run staging tests
+        run: pytest test/test_staging.py

@@ -1,0 +1,24 @@
+name: Prod CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  prod_tests:
+    runs-on: ubuntu-latest
+    env:
+      ENV: production
+      API_KEY: ${{ secrets.PROD_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Run prod tests
+        run: pytest test/test_prod.py
