@@ -1,0 +1,17 @@
+name: Promote dev -> staging (trigger Render deploy)
+
+on:
+  workflow_run:
+    workflows: ["CI - Development (lint & tests)"]
+    types: [completed]
+
+jobs:
+  trigger_render_deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy for staging
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_STAGING_SERVICE_ID }}
