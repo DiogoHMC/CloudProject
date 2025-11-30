@@ -4,7 +4,6 @@ import os
 import httpx
 import google.generativeai as genai
 import asyncio
-import logging
 
 from app.config import settings
 
