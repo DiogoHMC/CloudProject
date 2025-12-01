@@ -22,8 +22,6 @@ jobs:
 
           git fetch origin
           git checkout staging
-          # ------------------------------------------------------------------------------------------------------
-          # MODIFICADO: Adicionada a flag --allow-unrelated-histories para resolver o erro 'fatal: refusing to merge unrelated histories'
+          # CORREÇÃO: Adicionada a flag --allow-unrelated-histories
           git merge origin/development --no-ff --allow-unrelated-histories -m "Auto-merge development → staging"
-          # ------------------------------------------------------------------------------------------------------
           git push origin staging
