@@ -1,34 +1,29 @@
 name: ci-main
 
 on:
+  push:
+    branches: [main]
   workflow_run:
     workflows: ["merge-dev-to-staging"]
-    types:
-      - completed
+    types: [completed]
+  workflow_dispatch:
 
 jobs:
   test:
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
-      - name: Checkout staging branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: staging
+          ref: main
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt pytest-asyncio httpx
-
-      - name: Add project to PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-
-      - name: Run MAIN tests
-        run: pytest test/test_prod.py
+      - run: pip install -r requirements.txt pytest-asyncio httpx
+      - run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+      - run: pytest test/test_prod.py
