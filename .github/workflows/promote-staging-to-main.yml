@@ -2,7 +2,7 @@ name: merge-staging-to-main
 
 on:
   workflow_run:
-    workflows: ["ci-dev"]
+    workflows: ["ci-main"]
     types:
       - completed
 
