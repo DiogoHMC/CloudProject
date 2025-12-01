@@ -1,14 +1,18 @@
 name: CI - Main
 
 on:
+  push:
+    branches:
+      - main
+
   workflow_run:
-    workflows: ["Promote Staging - Main"]
+    workflows: ["Promote Staging → Main"]
     types:
       - completed
 
 jobs:
   test:
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -25,8 +29,5 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pytest-asyncio httpx
 
-      - name: Add project to PYTHONPATH
-        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
-
-      - name: Run tests
-        run: pytest
+      - name: Run only PROD tests
+        run: pytest test/test_prod.py

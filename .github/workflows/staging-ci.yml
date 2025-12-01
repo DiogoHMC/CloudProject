@@ -6,7 +6,7 @@ on:
       - staging
 
   workflow_run:
-    workflows: ["Promote Development - Staging"]
+    workflows: ["Promote Development → Staging"]
     types:
       - completed
 
@@ -29,8 +29,5 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pytest-asyncio httpx
 
-      - name: Add project to PYTHONPATH
-        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
-
-      - name: Run tests
-        run: pytest
+      - name: Run only STAGING tests
+        run: pytest test/test_staging.py
