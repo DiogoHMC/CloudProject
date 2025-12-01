@@ -1,4 +1,4 @@
-name: Promote Staging → Main
+name: Promote Staging - Main
 
 on:
   workflow_run:
@@ -10,26 +10,22 @@ jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
 
     steps:
-      - name: Checkout repo
-        # Faz checkout da branch 'staging' (a source)
+      - name: Checkout repo (staging)
         uses: actions/checkout@v4
         with:
-          ref: staging # Faz o checkout da source branch
+          ref: staging
 
-      - name: Overwrite main branch with staging content
+      - name: Promote staging to main
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # Muda para a branch de destino 'main' (aponta para o head da staging)
           git checkout -B main
-          
-          # Força o push do conteúdo local (staging) para a branch remota 'main'
           git push origin main --force
-          
-          echo "Branch main sobrescrita com sucesso a partir de staging."
+
+          echo "Branch main atualizada a partir de staging."

@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
       - name: Checkout repo
@@ -21,7 +21,6 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        # Correções de Teste
         run: pip install -r requirements.txt pytest-asyncio httpx
 
       - name: Add project to PYTHONPATH
