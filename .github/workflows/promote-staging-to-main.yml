@@ -11,23 +11,25 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     
-    # CORREÇÃO CRÍTICA: Permissão para realizar o push
     permissions:
       contents: write
 
     steps:
       - name: Checkout repo
+        # Faz checkout da branch 'staging' (a source)
         uses: actions/checkout@v4
-        
-      - name: Merge staging into main
+        with:
+          ref: staging # Faz o checkout da source branch
+
+      - name: Overwrite main branch with staging content
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git fetch origin
-          git checkout main
+          # Muda para a branch de destino 'main' (aponta para o head da staging)
+          git checkout -B main
           
-          git merge origin/staging --no-ff --allow-unrelated-histories -m "Auto-merge staging → main"
-          
-          # CORREÇÃO CRÍTICA: Força o push para evitar rejeição por histórico conflitante ou branch rule
+          # Força o push do conteúdo local (staging) para a branch remota 'main'
           git push origin main --force
+          
+          echo "Branch main sobrescrita com sucesso a partir de staging."
