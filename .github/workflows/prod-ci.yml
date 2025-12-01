@@ -3,19 +3,18 @@ name: CI - Production (minimal ask test)
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  prod_tests:
+  prod_tests_and_deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Move into project root
-        run: cd "$GITHUB_WORKSPACE"
-
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -32,3 +31,10 @@ jobs:
           ENV: production
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: pytest test/test_prod.py -q
+
+      - name: Deploy to Render Prod
+        if: ${{ success() }}
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_PROD_SERVICE_ID }}

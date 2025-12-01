@@ -3,22 +3,26 @@ name: CI - Staging (tests & validation)
 on:
   push:
     branches: [ staging ]
-  pull_request:
-    branches: [ staging ]
 
 jobs:
-  staging_tests:
+  staging_tests_and_deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Set PYTHONPATH
@@ -26,3 +30,20 @@ jobs:
 
       - name: Run staging tests
         run: pytest test/test_staging.py -q
+
+      - name: Deploy to Render Staging
+        if: ${{ success() }}
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_STAGING_SERVICE_ID }}
+
+      - name: Merge staging -> main
+        if: ${{ success() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          git merge origin/staging --no-ff --no-edit
+          git push origin main

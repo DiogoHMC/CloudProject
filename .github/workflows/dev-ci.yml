@@ -3,19 +3,20 @@ name: CI - Development (lint & tests)
 on:
   push:
     branches: [ development ]
-  pull_request:
-    branches: [ development ]
 
 jobs:
-  test_and_lint:
+  test_and_merge:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # necessário para push
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Move into project root
-        run: cd "$GITHUB_WORKSPACE"
-
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -32,3 +33,13 @@ jobs:
 
       - name: Run dev tests
         run: pytest test/test_dev.py -q
+
+      - name: Merge dev -> staging
+        if: ${{ success() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin staging
+          git checkout staging
+          git merge origin/development --no-ff --no-edit
+          git push origin staging
