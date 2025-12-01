@@ -13,11 +13,10 @@ jobs:
     
     permissions:
       contents: write
-      # NOVO: Adicione permissão para disparar outros workflows (o CI - Main)
-      workflow: write 
 
     steps:
       - name: Checkout repo
+        # Faz checkout da branch 'staging' (a source)
         uses: actions/checkout@v4
         with:
           ref: staging # Faz o checkout da source branch
@@ -27,6 +26,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
+          # Muda para a branch de destino 'main' (aponta para o head da staging)
           git checkout -B main
           
           # Força o push do conteúdo local (staging) para a branch remota 'main'
