@@ -1,0 +1,30 @@
+name: PR dev → staging
+
+on:
+  workflow_run:
+    workflows: ["CI - Development"]
+    types: [completed]
+
+jobs:
+  create_pr:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create PR from development → staging
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto/dev-to-staging
+          title: "Auto: Promote development → staging"
+          body: "This PR promotes development → staging automatically."
+          base: staging
+          delete-branch: true
+          labels: auto-merge

@@ -1,52 +1,26 @@
-name: CI - Staging (tests & deploy)
+name: CI - Staging
 
 on:
-  push:
-    branches: [ staging ]
   pull_request:
+    branches: [ staging ]
+  push:
     branches: [ staging ]
 
 jobs:
-  staging_tests_and_deploy:
+  staging_tests:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
       - name: Run staging tests
         run: pytest test/test_staging.py -q
-
-      - name: Deploy to Render Staging
-        if: ${{ success() }}
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          api-key: ${{ secrets.RENDER_API_KEY }}
-          service-id: ${{ secrets.RENDER_STAGING_SERVICE_ID }}
-
-      - name: Create PR staging -> main
-        if: ${{ success() }}
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Automatic merge staging -> main [bot]"
-          branch: main
-          base: main
-          title: "Automatic merge staging -> main"
-          body: "Merging staging into main automatically after successful CI and deploy"

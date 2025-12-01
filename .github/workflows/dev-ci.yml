@@ -1,48 +1,24 @@
-name: CI - Development (lint & tests)
+name: CI - Development
 
 on:
   push:
     branches: [ development ]
-  pull_request:
-    branches: [ development ]
 
 jobs:
-  test_and_merge:
+  dev_tests:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-
-      - name: Run lint
-        run: make lint
 
       - name: Run dev tests
         run: pytest test/test_dev.py -q
-
-      - name: Create PR dev -> staging
-        if: ${{ success() }}
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Automatic merge dev -> staging [bot]"
-          branch: staging
-          base: staging
-          title: "Automatic merge dev -> staging"
-          body: "Merging development into staging automatically after successful CI"

@@ -1,39 +1,40 @@
-name: CI - Production (minimal tests & deploy)
+name: CI + Deploy Production
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
+    branches: [ main ]
+  push:
     branches: [ main ]
 
 jobs:
-  prod_tests_and_deploy:
+  prod_tests:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-
-      - name: Run production minimal ask test
+      - name: Run production tests
         env:
           ENV: production
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: pytest test/test_prod.py -q
 
-      - name: Deploy to Render Production
-        if: ${{ success() }}
+  deploy:
+    needs: prod_tests
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Render (prod)
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           api-key: ${{ secrets.RENDER_API_KEY }}
