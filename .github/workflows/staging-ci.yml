@@ -1,7 +1,9 @@
-name: CI - Staging (tests, deploy & merge to main)
+name: CI - Staging (tests & deploy)
 
 on:
   push:
+    branches: [ staging ]
+  pull_request:
     branches: [ staging ]
 
 jobs:
@@ -38,12 +40,13 @@ jobs:
           api-key: ${{ secrets.RENDER_API_KEY }}
           service-id: ${{ secrets.RENDER_STAGING_SERVICE_ID }}
 
-      - name: Merge staging -> main
+      - name: Create PR staging -> main
         if: ${{ success() }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git checkout main
-          git merge origin/staging --no-ff --no-edit || git commit --allow-empty -m "Merge staging -> main [bot]"
-          git push origin main
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Automatic merge staging -> main [bot]"
+          branch: main
+          base: main
+          title: "Automatic merge staging -> main"
+          body: "Merging staging into main automatically after successful CI and deploy"

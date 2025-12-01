@@ -1,7 +1,9 @@
-name: CI - Production (minimal ask test & deploy)
+name: CI - Production (minimal tests & deploy)
 
 on:
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
 
 jobs:
