@@ -8,13 +8,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    env:
-      GEMINI_API_KEY: "dev-dummy-key"
+    env: # <--- ADICIONADO: Variável de ambiente para o teste de chave
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
 
     steps:
       - name: Checkout repo
-      uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -22,7 +21,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # MODIFICADO: Incluindo 'pytest-asyncio' para suportar testes assíncronos
+        run: pip install -r requirements.txt pytest-asyncio
 
       - name: Add project to PYTHONPATH
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
