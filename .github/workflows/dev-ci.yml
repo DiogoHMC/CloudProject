@@ -2,8 +2,8 @@ name: ci-dev
 
 on:
   push:
-    branches:
-      - development
+    branches: [development]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -12,19 +12,11 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt pytest-asyncio httpx
-
-      - name: Add project to PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-
-      - name: Run DEV tests
-        run: pytest test/test_dev.py
+      - run: pip install -r requirements.txt pytest-asyncio httpx
+      - run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+      - run: pytest test/test_dev.py
