@@ -11,7 +11,7 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     
-    # Adicionando permissão de escrita (WRITE) para o push
+    # CORREÇÃO CRÍTICA: Permissão para realizar o push
     permissions:
       contents: write 
 
@@ -27,8 +27,8 @@ jobs:
           git fetch origin
           git checkout staging
           
-          # Tentativa de merge com histórico, se houver falha de conflito, o próximo push --force irá sobrescrever
+          # Tentativa de merge para criar o commit, mesmo que haja conflito (o push forçado resolve depois)
           git merge origin/development --no-ff --allow-unrelated-histories -m "Auto-merge development → staging"
           
-          # MODIFICADO: Uso de --force para evitar falhas de histórico/fast-forward
+          # CORREÇÃO CRÍTICA: Força o push para evitar rejeição por histórico conflitante ou branch rule
           git push origin staging --force
