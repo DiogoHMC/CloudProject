@@ -1,8 +1,8 @@
-name: Promote Dev to Staging
+name: merge-dev-to-staging
 
 on:
   workflow_run:
-    workflows: ["CI - Staging"]
+    workflows: ["ci-staging"]
     types:
       - completed
 
@@ -19,7 +19,7 @@ jobs:
         with:
           ref: development
 
-      - name: Promote dev - staging
+      - name: merge development to staging
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"

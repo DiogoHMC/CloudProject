@@ -1,8 +1,8 @@
-name: CI - Main
+name: ci-main
 
 on:
   workflow_run:
-    workflows: ["Promote Dev to Staging"]
+    workflows: ["merge-dev-to-staging"]
     types:
       - completed
 
