@@ -2,29 +2,32 @@ name: merge-staging-to-main
 
 on:
   workflow_run:
-    workflows: ["ci-main"]
+    workflows: ["ci-dev"]
     types:
       - completed
+
+permissions:
+  contents: write
 
 jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout staging branch
+      - name: Checkout repository (staging)
         uses: actions/checkout@v4
         with:
           ref: staging
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: merge staging to main
+      - name: Configure Git
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
+      - name: Force update main branch from staging
+        run: |
           git checkout -B main
           git push origin main --force
-
-          echo "✔ main updated from staging"
+          echo "main updated from staging"
