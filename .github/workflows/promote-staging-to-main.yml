@@ -19,13 +19,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: staging
-
-      - name: merge staging to main
+          
+      - name: Merge staging into main
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git checkout -B main
-          git push origin main --force
+          git fetch origin
+          git checkout main
+          git merge origin/staging --no-ff -m "Merge staging into main [CI]"
+          git push origin main
 
-          echo "✔ main updated from development"
