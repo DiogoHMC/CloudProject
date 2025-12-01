@@ -15,6 +15,9 @@ jobs:
     if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -29,6 +32,6 @@ jobs:
 
       - name: Add project to PYTHONPATH
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
-      
+
       - name: Run tests
         run: pytest

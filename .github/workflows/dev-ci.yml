@@ -9,9 +9,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      GEMINI_API_KEY: "dev-dummy-key"
+
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+      uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
