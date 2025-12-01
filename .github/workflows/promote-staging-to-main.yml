@@ -15,19 +15,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository (staging)
+      - name: Checkout staging branch
         uses: actions/checkout@v4
         with:
           ref: staging
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
+      - name: merge staging to main
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-      - name: Force update main branch from staging
-        run: |
+
           git checkout -B main
           git push origin main --force
-          echo "main updated from staging"
+
+          echo "✔ main updated from development"
