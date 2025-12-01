@@ -10,11 +10,15 @@ jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    # ADICIONADO: Permissão para gravação
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
+        
       - name: Merge staging into main
         run: |
           git config user.name "github-actions"
@@ -22,6 +26,5 @@ jobs:
 
           git fetch origin
           git checkout main
-          # CORREÇÃO: Adicionada a flag --allow-unrelated-histories
           git merge origin/staging --no-ff --allow-unrelated-histories -m "Auto-merge staging → main"
           git push origin main

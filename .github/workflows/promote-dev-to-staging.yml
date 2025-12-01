@@ -10,10 +10,19 @@ jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    # ADICIONADO: Permissão para gravação e para disparar outros workflows
+    permissions:
+      contents: write # Permite o push
+      pull-requests: write # Boa prática, caso use PRs
+      # workflow: write # Opcional, mas útil para o evento 'workflow_run' disparar outro
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        # Usar um PAT (Personal Access Token) em vez do token padrão pode ser necessário aqui, mas vamos tentar o GITHUB_TOKEN primeiro.
+        uses: actions/checkout@v4 
+        # ATENÇÃO: Se a permissão 'contents: write' acima não resolver, descomente a linha abaixo e configure um PAT:
+        # with:
+        #   token: ${{ secrets.PAT_TOKEN }} # (Se precisar de um token com mais permissão)
 
       - name: Merge development into staging
         run: |
@@ -22,6 +31,5 @@ jobs:
 
           git fetch origin
           git checkout staging
-          # CORREÇÃO: Adicionada a flag --allow-unrelated-histories
           git merge origin/development --no-ff --allow-unrelated-histories -m "Auto-merge development → staging"
           git push origin staging
