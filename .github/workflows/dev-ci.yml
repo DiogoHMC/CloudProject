@@ -3,12 +3,14 @@ name: CI - Development (lint & tests)
 on:
   push:
     branches: [ development ]
+  pull_request:
+    branches: [ development ]
 
 jobs:
-  test_and_merge:
+  test_and_lint:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # necessário para push
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -41,5 +43,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin staging
           git checkout staging
-          git merge origin/development --no-ff --no-edit
+          git merge origin/development --no-ff --no-edit || git commit --allow-empty -m "Merge dev -> staging [bot]"
           git push origin staging

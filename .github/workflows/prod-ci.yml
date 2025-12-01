@@ -1,4 +1,4 @@
-name: CI - Production (minimal ask test)
+name: CI - Production (minimal ask test & deploy)
 
 on:
   push:
@@ -10,8 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -32,7 +30,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: pytest test/test_prod.py -q
 
-      - name: Deploy to Render Prod
+      - name: Deploy to Render Production
         if: ${{ success() }}
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
