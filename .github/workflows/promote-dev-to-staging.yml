@@ -3,27 +3,24 @@ name: Promote Development → Staging
 on:
   workflow_run:
     workflows: ["CI - Development"]
-    types: [completed]
+    types:
+      - completed
 
 jobs:
   promote:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Create PR dev → staging
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: staging
-          head: development
-          branch: auto/dev-to-staging
-          title: "Promote development → staging"
-          body: "Automated promotion after passing CI - Development"
+      - name: Merge development into staging
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git fetch origin
+          git checkout staging
+          git merge origin/development --no-ff -m "Auto-merge development → staging"
+          git push origin staging

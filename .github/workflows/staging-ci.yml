@@ -2,40 +2,30 @@ name: CI - Staging
 
 on:
   push:
-    branches: [ staging ]
-  pull_request:
-    branches: [ staging ]
+    branches:
+      - staging
+
+  workflow_run:
+    workflows: ["Promote Development → Staging"]
+    types:
+      - completed
 
 jobs:
-  staging_tests:
+  test:
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.12"
 
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+        run: pip install -r requirements.txt
 
       - name: Run tests
-        run: pytest test/test_staging.py -q
-
-  deploy_staging:
-    needs: staging_tests
-    if: success()
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to Render (staging)
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          api-key: ${{ secrets.RENDER_API_KEY }}
-          service-id: ${{ secrets.RENDER_STAGING_SERVICE_ID }}
+        run: pytest
