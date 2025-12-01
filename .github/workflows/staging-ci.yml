@@ -1,19 +1,19 @@
 name: CI - Staging
 
 on:
-  pull_request:
-    branches: [ staging ]
   push:
-    branches: [ staging ]
+    branches: ["staging"]
+  pull_request:
+    branches: ["staging"]
 
 jobs:
-  staging_tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -22,5 +22,5 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run staging tests
-        run: pytest test/test_staging.py -q
+      - name: Run tests
+        run: pytest -q

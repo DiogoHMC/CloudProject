@@ -1,28 +1,20 @@
-name: PR staging → main
+name: Promote staging to main
 
 on:
   push:
-    branches: [ staging ]
+    branches: ["staging"]
 
 jobs:
-  create_pr:
+  promote:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Create PR from staging → main
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: auto/staging-to-main
-          title: "Auto: Promote staging → main"
-          body: "This PR promotes staging → main automatically."
+          branch: promotion/staging-to-main
           base: main
-          delete-branch: true
-          labels: auto-merge
+          title: "Promote staging → main"
+          body: "Automated promotion from staging to main"
