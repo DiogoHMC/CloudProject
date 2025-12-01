@@ -2,7 +2,7 @@ name: CI - Main
 
 on:
   workflow_run:
-    workflows: ["CI - Staging"]
+    workflows: ["Promote Dev to Staging"]
     types:
       - completed
 
@@ -14,7 +14,7 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
     steps:
-      - name: Checkout repo
+      - name: Checkout staging branch
         uses: actions/checkout@v4
         with:
           ref: staging
