@@ -1,17 +1,20 @@
 name: CI - Staging
 
 on:
+  workflow_run:
+    workflows: ["Promote Development - Staging"]
+    types:
+      - completed
   push:
     branches:
       - staging
 
-  workflow_run:
-    workflows: ["Promote Development → Staging"]
-    types:
-      - completed
+permissions:
+  contents: read
 
 jobs:
   test:
+    # run on push OR when promote workflow completed successfully
     if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
@@ -20,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -29,5 +34,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pytest-asyncio httpx
 
-      - name: Run only STAGING tests
-        run: pytest test/test_staging.py
+      - name: Export PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+
+      - name: Run STAGING tests
+        run: pytest test/test_staging.py -q

@@ -1,4 +1,4 @@
-name: Promote Development → Staging
+name: Promote Development - Staging
 
 on:
   workflow_run:
@@ -6,30 +6,30 @@ on:
     types:
       - completed
 
+permissions:
+  contents: write
+
 jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write 
 
     steps:
-      - name: Checkout repo
-        # Faz checkout da branch 'development' (a source)
+      - name: Checkout repository (development)
         uses: actions/checkout@v4
         with:
-          ref: development # Faz o checkout da source branch
+          ref: development
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Overwrite staging branch with development content
+      - name: Configure Git
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          
-          # Muda para a branch de destino 'staging' (cria se não existir, mas aponta para o head da development)
+
+      - name: Force update staging branch from development
+        run: |
+          # Create/update local staging branch based on current checkout (development)
           git checkout -B staging
-          
-          # Força o push do conteúdo local (development) para a branch remota 'staging'
           git push origin staging --force
-          
-          echo "Branch staging sobrescrita com sucesso a partir de development."
+          echo "staging updated from development"

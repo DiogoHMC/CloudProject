@@ -1,14 +1,16 @@
 name: CI - Main
 
 on:
+  workflow_run:
+    workflows: ["Promote Staging - Main"]
+    types:
+      - completed
   push:
     branches:
       - main
 
-  workflow_run:
-    workflows: ["Promote Staging → Main"]
-    types:
-      - completed
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -20,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -29,5 +33,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pytest-asyncio httpx
 
-      - name: Run only PROD tests
-        run: pytest test/test_prod.py
+      - name: Export PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+
+      - name: Run PROD tests
+        run: pytest test/test_prod.py -q
