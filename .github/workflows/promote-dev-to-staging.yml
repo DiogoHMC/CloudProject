@@ -1,4 +1,4 @@
-name: Promote Development - Staging
+name: Promote Development to Staging
 
 on:
   workflow_run:
@@ -6,30 +6,25 @@ on:
     types:
       - completed
 
-permissions:
-  contents: write
-
 jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout repository (development)
+      - name: Checkout repo from development
         uses: actions/checkout@v4
         with:
           ref: development
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
+      - name: Promote development → staging
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Force update staging branch from development
-        run: |
-          # Create/update local staging branch based on current checkout (development)
           git checkout -B staging
           git push origin staging --force
-          echo "staging updated from development"
+
+          echo "✔ staging updated from development"

@@ -1,34 +1,30 @@
-name: Promote Staging - Main
+name: Promote Staging to Main
 
 on:
   workflow_run:
-    workflows: ["CI - Staging"]
+    workflows: ["CI - Main"]
     types:
       - completed
-
-permissions:
-  contents: write
 
 jobs:
   promote:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout repository (staging)
+      - name: Checkout staging branch
         uses: actions/checkout@v4
         with:
           ref: staging
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
+      - name: Promote staging → main
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Force update main branch from staging
-        run: |
           git checkout -B main
           git push origin main --force
-          echo "main updated from staging"
+
+          echo "✔ main updated from staging"
