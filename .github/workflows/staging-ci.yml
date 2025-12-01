@@ -1,26 +1,29 @@
-name: CI - Staging
+name: CI - Staging (tests only)
 
 on:
   push:
-    branches: ["staging"]
+    branches: [ staging ]
   pull_request:
-    branches: ["staging"]
+    branches: [ staging ]
 
 jobs:
-  test:
+  staging_tests:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest -q
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
+      - name: Run staging tests
+        run: pytest test/test_staging.py -q

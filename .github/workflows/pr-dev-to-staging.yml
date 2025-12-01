@@ -1,20 +1,29 @@
 name: Promote development to staging
 
 on:
-  push:
-    branches: ["development"]
+  workflow_run:
+    workflows: ["CI - Development (tests only)"]
+    types: [completed]
 
 jobs:
   promote:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create Pull Request
+      - name: Create PR from development → staging
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: promotion/dev-to-staging
-          base: staging
           title: "Promote development → staging"
-          body: "Automated promotion from development to staging"
+          body: "Auto-promotion after passing CI"
+          base: staging
+          head: development
+          branch: auto/dev-to-staging

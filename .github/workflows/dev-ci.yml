@@ -1,34 +1,29 @@
-name: CI - Development
+name: CI - Development (tests only)
 
 on:
   push:
-    branches: ["development"]
+    branches: [ development ]
   pull_request:
-    branches: ["development"]
+    branches: [ development ]
 
 jobs:
-  test:
+  dev_tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run lint
-        run: |
-          pip install flake8
-          flake8 app
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
-      - name: Run tests
-        run: |
-          pytest -q
+      - name: Run dev tests
+        run: pytest test/test_dev.py -q

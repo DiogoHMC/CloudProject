@@ -1,20 +1,29 @@
-name: Auto Merge PR to Main
+name: CI - Production (tests only)
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
-    branches: ["main"]
-    types: [opened, synchronize, reopened]
+    branches: [ main ]
 
 jobs:
-  automerge:
-    permissions:
-      pull-requests: write
-      contents: write
+  prod_tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Enable auto merge
-        uses: peter-evans/enable-pull-request-automerge@v3
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          merge-method: squash
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
+      - name: Run prod tests
+        run: pytest test/test_prod.py -q
