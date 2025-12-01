@@ -1,4 +1,4 @@
-name: CI - Production (tests only)
+name: CI - Production
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -25,5 +25,17 @@ jobs:
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
-      - name: Run prod tests
+      - name: Run tests
         run: pytest test/test_prod.py -q
+
+  deploy_prod:
+    needs: prod_tests
+    if: success()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Render (production)
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_PROD_SERVICE_ID }}

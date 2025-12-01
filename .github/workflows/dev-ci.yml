@@ -1,4 +1,4 @@
-name: CI - Development (tests only)
+name: CI - Development
 
 on:
   push:
@@ -25,5 +25,5 @@ jobs:
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
-      - name: Run dev tests
+      - name: Run tests
         run: pytest test/test_dev.py -q

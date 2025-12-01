@@ -1,8 +1,8 @@
-name: Promote staging to main
+name: Promote Development → Staging
 
 on:
   workflow_run:
-    workflows: ["CI - Staging (tests only)"]
+    workflows: ["CI - Development"]
     types: [completed]
 
 jobs:
@@ -18,12 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create PR from staging → main
+      - name: Create PR dev → staging
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Promote staging → main"
-          body: "Auto-promotion after passing CI"
-          base: main
-          head: staging
-          branch: auto/staging-to-main
+          base: staging
+          head: development
+          branch: auto/dev-to-staging
+          title: "Promote development → staging"
+          body: "Automated promotion after passing CI - Development"
