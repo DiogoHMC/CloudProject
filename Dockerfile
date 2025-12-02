@@ -1,4 +1,3 @@
-# Stage 1: build dependencies
 FROM python:3.11-slim as builder
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -10,7 +9,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt
 
-# Stage 2: runtime
+
 FROM python:3.11-slim
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \

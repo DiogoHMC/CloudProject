@@ -14,7 +14,6 @@ class IsCoolService:
         
         if detail not in ("high", "low"):
             detail = "low"
-            
         if detail == "high":
             detail = "alto, com muitos detalhes e exemplos"
         elif detail == "low":
