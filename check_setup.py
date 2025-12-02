@@ -152,7 +152,7 @@ def main():
         print("🎉 Tudo parece estar configurado corretamente para a integração com Gemini!")
         return 0
     else:
-        print("⚠️  Alguns itens não passaram na verificação. Por favor, revise os paassos acima.")
+        print("⚠️  Alguns itens não passaram na verificação. Por favor, revise os paassoxxzs acima.")
         print("⚠️  Alguns itens não passaram na verificação. Por favor, revise os passos acimasdasdasdsda.")
         return 1
     
