@@ -25,5 +25,6 @@ jobs:
           git config user.email "github-actions@github.com"
           git fetch origin
           git checkout staging
-          git merge origin/development --no-ff -m "Promote Dev → Staging"
+          # Allow merging unrelated histories (useful when branches have different roots)
+          git merge origin/development --no-ff --allow-unrelated-histories -m "Promote Dev → Staging"
           git push origin staging
